@@ -942,3 +942,12 @@ MongoDB ديناميكية بطبيعتها، لذا أي إضافة لحقل ج
 - يعتمد على مبدأ كتابة الكود لتنفيذ التعديلات تلقائيًا بدلاً من القيام بها يدويًا.
 - MongoDB (مع Mongoose) 
 - يتميز بعدم الحاجة إلى Migrations تقليدية، لكن يظل العمل منظمًا عبر **Schemas**.
+
+
+
+
+## References
+
+1. [NestJS Official Documentation](https://docs.nestjs.com/)
+2. [YouTube Video - NestJS Overview](https://youtu.be/RwOxUg2rsjY?si=NYdkEr764ir0-xjS)
+3. Assistance with research provided by ChatGPT.
