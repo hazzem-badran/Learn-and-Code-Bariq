@@ -1,5 +1,4 @@
 
-
 dbngin
 table plus
 
@@ -16,7 +15,7 @@ app.controller.ts
 
 
 -هاد عبارة عن الكنترولر وبعرف بداخلو الرواتس routs
--وأيش الفنكشن اللي هتشتغل بناءً على ويارة هاد الرراوت او end point
+-وأيش الفنكشن اللي هتشتغل بناءً على زيارة هاد الرراوت او end point
 فمن هاد بنستقبل الركوست وبترجع الرسبونس اللي بدك ترجعو
 
 app.module.ts
@@ -29,36 +28,63 @@ app.module.ts
     providers: [AppService],
 })
 ```
+
 -الموديل هاد زي الانترفيس تبع  app 
--وبتعرفلي بداخلها ايش همة controllers واللي هوة المكان اللي بترف فيه ال end point تبعتك
+-وبتعرفلي بداخلها ايش همة controllers واللي هوة المكان اللي بنعرف فيه ال end point تبعتك
 -ال Module هوة عبارة عن جزئية من جزئيات المشروع
 ال providers وهية عبارة عن ال Services اللي بتحتوي بداخلها المنطق 
+
+في **NestJS**، ملف **`app.module.ts`** هو نقطة البداية الأساسية لتطبيقك. وهو بمثابة الملف الرئيسي الذي يجمع المكونات (Modules) والخدمات (Services) والمسارات (Controllers) في تطبيقك.
+
+### **ما هو Module في NestJS؟**
+
+- **الموديل (Module)** هو عبارة عن حاوية تُستخدم لتنظيم الكود الخاص بك في وحدات منطقية.
+- ملف **`app.module.ts`** هو الموديل الجذري (Root Module) لتطبيقك، ومن خلاله يتم تحميل باقي الموديلات.
+
+
+
+`@Module` 
+هو **ديكور (Decorator)** يُستخدم لتعريف وحدة (Module) في تطبيق NestJS. الوحدة هي الأساس الذي يُقسم به التطبيق إلى أجزاء مُنظمة.
+
+### **المكونات الأربعة في المثال:**
+
+1. **`imports: []`:**
+    
+    - يُستخدم لاستيراد الوحدات الأخرى التي يحتاجها هذا الموديل.
+    - مثال: إذا كنت تحتاج إلى خدمات أو ميزات من وحدة أخرى.
+2. **`controllers: []`:**
+    
+    - تُحدد الـ Controllers التي تحتوي على نقاط الوصول (Endpoints) الخاصة بهذا الموديل.
+3. **`providers: []`:**
+    
+    - تحتوي على الخدمات (Services) أو أي مزودات يتم تعريفها في هذا الموديل.
+4. **`exports: []`:**
+    
+    - تُحدد ما يمكن تصديره من هذا الموديل للوحدات الأخرى.
+
+### **وظيفته:**
+
+يساعد هذا التصميم في فصل المنطق الخاص بالتطبيق إلى وحدات مستقلة يسهل تطويرها وصيانتها.
+
 
 main.ts
 -هاد الملف الأساس اللي رح يشتغل منو المشروع 
 
 ```
 import { NestFactory } from '@nestjs/core';
-
 import { AppModule } from './app.module';
-
   
-
 async function bootstrap() {
-
-const app = await NestFactory.create(AppModule);
-
-await app.listen(process.env.PORT ?? 3000);
-
+	const app = await NestFactory.create(AppModule);
+	
+	await app.listen(process.env.PORT ?? 3000);
 }
-
 bootstrap();
 ```
 
 
+ال @ ومن ثمة كلمة ثم قوسين بنقال عنها Decorator
 @Controller()
-ال @ ومن ثمة كلمة ثمةقوسين بنقال عنها Decorator
-
 Decorator that marks a class as a Nest controller that can receive inbound requests and produce responses.
 
 الـ **Decorator** في NestJS هو مجرد وظيفة (Function) تُستخدم لإضافة ميزات أو تعديل سلوك شيء في الكود، مثل **كلاس** أو **دالة** أو **باراميتر**.
@@ -70,48 +96,40 @@ Decorator that marks a class as a Nest controller that can receive inbound reque
 - يضيف أو يغير طريقة عمل العنصر.
 
 ### **أنواع الـ Decorators الشائعة في NestJS:**
+ **@Controller()**
+- يُستخدم لتحديد أن الكلاس هو "Controller" يتعامل مع الطلبات (Requests)
+- مثال:
+`@Controller('users') // يحدد أن هذا الكلاس يتعامل مع مسار '/users' export class UsersController {}`
 
-1. **@Controller()**
-    
-    - يُستخدم لتحديد أن الكلاس هو "Controller" يتعامل مع الطلبات (Requests).
-    - مثال:
-        
-        `@Controller('users') // يحدد أن هذا الكلاس يتعامل مع مسار '/users' export class UsersController {}`
-        
-2. **@Get() / @Post() / @Put() / @Delete()**
-    
-    - تُستخدم لتحديد نوع الطلب (HTTP Method) والمسار المرتبط به.
-    - مثال:
-        
-        `@Get('profile') // يربط هذه الدالة بمسار GET '/profile' getProfile() {   return 'User Profile'; }`
-        
-3. **@Injectable()**
-    
-    - تُستخدم مع الكلاسات التي تقدم خدمات (Services).
-    - تجعل الكلاس قابلاً للحقن (Dependency Injection).
-    - مثال:
-        
-        
-        `@Injectable() export class UserService {   getUser() {     return { name: 'John Doe' };   } }`
+ **@Get() / @Post() / @Put() / @Delete()**
+- تُستخدم لتحديد نوع الطلب (HTTP Method) والمسار المرتبط به.
+ مثال:
+`@Get('profile') // يربط هذه الدالة بمسار GET '/profile' getProfile() {   return 'User Profile'; }`
+
+**@Injectable()**
+
+- تُستخدم مع الكلاسات التي تقدم خدمات (Services).
+- تجعل الكلاس قابلاً للحقن (Dependency Injection).
+- مثال:
+```
+@Injectable()
+export class UserService {  
+getUser() {    
+	return { name: 'John Doe' };  
+	} 
+}
+```
+
+**@Param()**
+-تُستخدم لجلب القيم من متغيرات المسار (Route Parameters).
+ مثال:   
+``@Get(':id') getUserById(@Param('id') id: string) {   return `User ID is ${id}`; }``
 
 
-1. **@Param()**
-    
-    - تُستخدم لجلب القيم من متغيرات المسار (Route Parameters).
-    - مثال:
-        
-        
-        ``@Get(':id') getUserById(@Param('id') id: string) {   return `User ID is ${id}`; }``
-        
-5. **@Body()**
-    
-    - تُستخدم لجلب البيانات المرسلة في جسم الطلب (Request Body).
-    - مثال:
-        
-
-        
-        `@Post() createUser(@Body() userData: any) {   return userData; }`
-        
+**@Body()** 
+-تُستخدم لجلب البيانات المرسلة في جسم الطلب (Request Body).
+ مثال:
+`@Post() createUser(@Body() userData: any) {   return userData; }`
 
 ### **لماذا نستخدم الـ Decorators؟**
 
@@ -125,49 +143,27 @@ Decorator that marks a class as a Nest controller that can receive inbound reque
 - هو مثل أنك تضيف ملصقًا أو وظيفة إضافية للعنصر.
 - على سبيل المثال: إذا قلت لصديقك أن "هذه القهوة فيها سكر"، فـ @Body() هو السكر الذي يضيف المعلومة للقهوة (الطلب).
 
-
-
-
-
 ```
-  
-
 @Controller()
-
 export class AppController {
-
-constructor(private readonly appService: AppService) {}
-
-  
-@Get()
-
-getHello(): string {
-
-return this.appService.getHello();
-
-}
-
-  
-
-@Get('/hazem')
-
-getHazem(): string {
-
-return this.appService.getHazem();
-
-}
-
-@Post(`/hazem`)
-
-setHazem(@Body('name') name : string ){
-
-return this.appService.sayHi(name);
-
-}
-
+	constructor(private readonly appService: AppService) {}
+	
+	@Get()
+	getHello(): string {
+		return this.appService.getHello();
+	}
+	
+	@Get('/hazem')
+	getHazem(): string {
+		return this.appService.getHazem();
+	}
+	
+	@Post(`/hazem`)
+	setHazem(@Body('name') name : string ){
+		return this.appService.sayHi(name);
+	}
 }
 ```
-
 
 
 ال appService عرفنااها بداخل ال constructor  ولاحظ أنها من نوع AppService  ونها هين بخدها آز برامتر فنكشن وبالاحرى رح يتم استدعائها  لما أعمل object  من كلاس AppController
@@ -182,22 +178,15 @@ constructor(private readonly appService: AppService) {}
 المهم هاد السيرفس رح اعرفها كبرامتر وحط نوعها هاي السيرفر AppService و nest js رح يفهم لحالو انو لازم يعملك object    من AppService في وقت run time 
 
 
-
-وال  Dependency Injection (DI) تابع تحت اطار او مفهوم Inversion of Control
-
-
+ال  Dependency Injection (DI) تابع تحت اطار او مفهوم Inversion of Control
 
 
 **الـ Dependency Injection (DI)** هو مفهوم في البرمجة يساعد في جعل الكود أكثر مرونة، قابلية للاختبار، وصيانة. باختصار، هو وسيلة لإعطاء **الكلاسات** أو **المكونات** التي تحتاج إلى شيء (مثل خدمة أو كلاس آخر) هذا الشيء، بدلاً من أن تقوم هي بإنشائه بنفسها.
 
----
-
 ### **الفكرة الأساسية:**
-
 بدلاً من أن يقوم الكود بإنشاء الكائنات أو الخدمات داخل الكلاس نفسه، يتم "حقن" هذه الخدمات أو الكائنات من الخارج.
 
 ### **مثال بسيط بدون DI:**
-
 تخيل أنه عندك كلاس `UserService` الذي يحتاج إلى `DatabaseService`:
 
 
@@ -250,15 +239,14 @@ class UserService {
 
 ---
 
-### **كيف يعمل DI في NestJS؟**
+### **كيف يعمل DI في NestJS؟*
 
 في NestJS، يمكننا استخدام **DI Container** الذي يعتني بحقن الخدمات تلقائيًا. يتم ذلك باستخدام **الـ Decorators** مثل `@Injectable()` و `@Inject()`.
 
 #### 1. **تعريف خدمة (Service)**
 
-
 ```
-@Injectable()  // تحديد الخدمة باستخدام ديكوراتور Injectable
+@Injectable()  // تحديد الخدمة باستخدام ديكوراتور
 export class DatabaseService {
   connect() {
     console.log("Connected to the database");
@@ -267,7 +255,6 @@ export class DatabaseService {
 ```
 
 #### 2. **حقن الخدمة في Controller أو Service آخر**
-
 
 ```
 @Controller('users')
@@ -285,10 +272,10 @@ export class UserController {
 
 في المثال أعلاه:
 
-- **`DatabaseService`** يتم حقنها تلقائيًا داخل **`UserController`** عبر **الـ Constructor**.
-- NestJS يقوم بإنشاء `DatabaseService` وتوفيرها في `UserController` دون الحاجة لإنشائها يدويًا.
+- ا**`DatabaseService`** يتم حقنها تلقائيًا داخل **`UserController`** عبر **الـ Constructor**.
+- ا NestJS يقوم بإنشاء `DatabaseService` وتوفيرها في `UserController` دون الحاجة لإنشائها يدويًا.
 
----
+
 
 ### **لماذا نستخدم الـ Dependency Injection؟**
 
@@ -301,7 +288,6 @@ export class UserController {
 4. **إعادة الاستخدام (Reusability)**:
     - يمكن إعادة استخدام الكلاسات أو الخدمات بسهولة في أجزاء أخرى من التطبيق.
 
----
 
 ### **باختصار**:
 
@@ -309,11 +295,10 @@ export class UserController {
 
 ---
 ----
----
 
 
-
-**"إنفيرجن كنترول" (Inversion of Control)**، وهو مبدأ أساسي في تصميم البرمجيات، خصوصًا في إطار العمل مثل **NestJS** أو **Spring** في Java. يهدف هذا المبدأ إلى **عكس تدفق التحكم** في البرنامج بحيث لا تتحكم الكائنات في إنشاء الأشياء التي تعتمد عليها، بل يتم "حقن" هذه الأشياء أو الاعتماديات (Dependencies) من الخارج.
+**"إنفيرجن كنترول" (Inversion of Control)**، وهو مبدأ أساسي في تصميم البرمجيات، خصوصًا في إطار العمل مثل **NestJS** أو **Spring** في Java.
+يهدف هذا المبدأ إلى **عكس تدفق التحكم** في البرنامج بحيث لا تتحكم الكائنات في إنشاء الأشياء التي تعتمد عليها، بل يتم "حقن" هذه الأشياء أو الاعتماديات (Dependencies) من الخارج.
 
 ### **مفهوم Inversion of Control (IoC)**
 
@@ -329,53 +314,6 @@ export class UserController {
 
 في **NestJS**، **IoC** يتم تطبيقه من خلال **الـ Dependency Injection (DI)**، حيث يقوم إطار العمل بإدارة حياة الكائنات، وحقنها في الأماكن المطلوبة.
 
-### **مثال على Inversion of Control في NestJS**:
-
-#### بدون Inversion of Control:
-
-هنا يقوم الكلاس بإنشاء الخدمة بنفسه:
-
-```
-class UserService {
-  private dbService: DatabaseService;
-
-  constructor() {
-    this.dbService = new DatabaseService();  // الكلاس يقوم بإنشاء الـ DatabaseService
-  }
-
-  getUsers() {
-    this.dbService.connect();
-    console.log("Fetching users...");
-  }
-}
-
-```
-
-#### مع Inversion of Control:
-
-هنا، **NestJS** يقوم بإنشاء `DatabaseService` وحقنها في `UserService` تلقائيًا باستخدام **DI**:
-
-
-```
-@Injectable()
-class DatabaseService {
-  connect() {
-    console.log("Connected to the database");
-  }
-}
-
-@Injectable()
-class UserService {
-  constructor(private dbService: DatabaseService) {}  // يتم حقن الـ DatabaseService هنا
-
-  getUsers() {
-    this.dbService.connect();
-    console.log("Fetching users...");
-  }
-}
-
-```
-
 ### **كيف NestJS يحقق هذا؟**
 
 - **`@Injectable()`**: 
@@ -390,7 +328,7 @@ class UserService {
 - في **NestJS**، يتم تطبيق **IoC** عبر **Dependency Injection (DI)**، مما يسمح لك بحقن الخدمات في الكلاسات بدلاً من أن تقوم الكلاسات بإنشائها بنفسها.
 
 
-بحث بعدين 
+بحث  
 -  ال**IoC** ليس فقط **Dependency Injection**، بل يشمل طرقًا أخرى مثل:
     - **Event-driven Programming**
     - **Template Method**
@@ -401,22 +339,6 @@ class UserService {
  كل طريقة لها استخدامات مختلفة حسب الحاجة والتطبيق.
 
 
-
----
----
----
-
-في **NestJS**، ملف **`app.module.ts`** هو نقطة البداية الأساسية لتطبيقك. وهو بمثابة الملف الرئيسي الذي يجمع المكونات (Modules) والخدمات (Services) والمسارات (Controllers) في تطبيقك.
-
-### **ما هو Module في NestJS؟**
-
-- **الموديل (Module)** هو عبارة عن حاوية تُستخدم لتنظيم الكود الخاص بك في وحدات منطقية.
-- ملف **`app.module.ts`** هو الموديل الجذري (Root Module) لتطبيقك، ومن خلاله يتم تحميل باقي الموديلات.
-
-
-
----
----
 ---
 
 
@@ -428,7 +350,6 @@ class UserService {
 - **`g`**: اختصار لـ **generate**، وهي تستخدم لإنشاء ملفات أو مكونات جديدة.
 - **`controller`**: نوع العنصر الذي تريد إنشاؤه (في هذه الحالة، هو **Controller**).
 - **`booking`**: اسم الـ Controller الذي تريد إنشاؤه.
-
 
 
 في **NestJS**، الكلمة المفتاحية **`g`** هي اختصار للأمر **`generate`** الذي يستخدم لإنشاء مختلف المكونات الأساسية في المشروع. أداة **CLI** الخاصة بـ **NestJS** توفر طريقة فعّالة وسريعة لإنشاء هذه المكونات مع الهيكلة الافتراضية الموصى بها.
@@ -457,51 +378,37 @@ class UserService {
 - **`type`**: نوع العنصر المراد إنشاؤه (مثل: `controller`, `service`, `module`, إلخ).
 - **`name`**: اسم العنصر الذي ترغب في إنشائه.
 
----
 
 ### **أمثلة على الاستخدام:**
 
 1. **إنشاء Controller:**
+`nest g controller user`
+	يقوم بإنشاء ملف `user.controller.ts` للتعامل مع طلبات HTTP الخاصة بمسار المستخدمين.
 
-    
-    `nest g controller user`
-    
-    يقوم بإنشاء ملف `user.controller.ts` للتعامل مع طلبات HTTP الخاصة بمسار المستخدمين.
-    
 2. **إنشاء Service:**
-    
-    `nest g service user`
-    
-    يقوم بإنشاء ملف `user.service.ts` لكتابة منطق الأعمال.
-    
+`nest g service user`
+	يقوم بإنشاء ملف `user.service.ts` لكتابة منطق الأعمال.
+
 3. **إنشاء Module:**
-    
     `nest g module user`
-    
     يقوم بإنشاء ملف `user.module.ts` لإدارة مكونات المستخدمين.
     
 4. **إنشاء Middleware:**
     
-    
     `nest g middleware logger`
-    
     يقوم بإنشاء Middleware لمعالجة الطلبات.
     
 5. **إنشاء Guard:**
     
     `nest g guard auth`
-    
     يقوم بإنشاء ملف Guard للتأكد من صلاحيات الوصول.
-    
+
 6. **إنشاء Pipe:**
 
-    
     `nest g pipe validation`
-    
-    يقوم بإنشاء Pipe للتحقق من البيانات أو تعديلها.
-    
 
----
+    يقوم بإنشاء Pipe للتحقق من البيانات أو تعديلها.
+
 
 ### **خيارات إضافية:**
 
@@ -517,39 +424,9 @@ class UserService {
 
 - ينشئ **Service** باسم `auth` ويضيفه تلقائيًا إلى **AppModule**.
 
-### **فوائد استخدام `nest g`:**
-
-1. **سرعة الإنتاجية**: لا تحتاج إلى إنشاء الملفات يدويًا.
-2. **تنظيم المشروع**: الملفات تُنشأ وفقًا للهيكلة الموصى بها.
-3. **التكامل مع الموديولز**: العناصر الجديدة تُضاف تلقائيًا إلى الموديول.
-
----
----
 ---
 
 
-`@Module` 
-هو **ديكور (Decorator)** يُستخدم لتعريف وحدة (Module) في تطبيق NestJS. الوحدة هي الأساس الذي يُقسم به التطبيق إلى أجزاء مُنظمة.
-
-### **المكونات الأربعة في المثال:**
-
-1. **`imports: []`:**
-    
-    - يُستخدم لاستيراد الوحدات الأخرى التي يحتاجها هذا الموديل.
-    - مثال: إذا كنت تحتاج إلى خدمات أو ميزات من وحدة أخرى.
-2. **`controllers: []`:**
-    
-    - تُحدد الـ Controllers التي تحتوي على نقاط الوصول (Endpoints) الخاصة بهذا الموديل.
-3. **`providers: []`:**
-    
-    - تحتوي على الخدمات (Services) أو أي مزودات يتم تعريفها في هذا الموديل.
-4. **`exports: []`:**
-    
-    - تُحدد ما يمكن تصديره من هذا الموديل للوحدات الأخرى.
-
-### **وظيفته:**
-
-يساعد هذا التصميم في فصل المنطق الخاص بالتطبيق إلى وحدات مستقلة يسهل تطويرها وصيانتها.
 
 ---
 ---
@@ -637,311 +514,6 @@ bootstrap();
 2. **تسهيل الصيانة:** يمكنك تحديد الهيكل المتوقع للبيانات بشكل واضح ومنفصل.
 3. **تحسين الأمان:** يمنع تمرير بيانات غير مرغوب فيها أو خطيرة.
 4. **إعادة الاستخدام:** يمكن استخدام DTO في أماكن متعددة داخل التطبيق.
-
----
----
----
-
-
-في **NestJS**، الكيانات (**Entities**) تُستخدم مع ORM (Object-Relational Mapping) مثل **TypeORM** أو **Sequelize** لتمثيل الجداول في قواعد البيانات ككائنات في الكود.
-
-### **ما هي الكيانات (Entities)؟**
-
-- الكيان هو **نموذج (Model)** يُمثل جدولًا في قاعدة البيانات.
-- يحتوي على الحقول (الخصائص) التي تمثل أعمدة الجدول.
-- يُستخدم لإنشاء الجداول، وإجراء العمليات عليها (CRUD)، والربط بين الجداول.
-
-
-
-### **تعريف كيان باستخدام TypeORM**
-
-1. **إنشاء الكيان:** يتم تعريف الكيانات كفئات (Classes) باستخدام Decorators لتحديد الحقول والخصائص.
-    
-    **مثال:**
-
-```
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-
-@Entity() // يُشير إلى أن هذه الفئة تمثل جدولًا في قاعدة البيانات.
-export class User {
-    @PrimaryGeneratedColumn() // العمود الرئيسي ويتم توليد قيمته تلقائيًا.
-    id: number;
-
-    @Column() // عمود عادي في الجدول.
-    name: string;
-
-    @Column({ unique: true }) // عمود يجب أن تكون قيمه فريدة.
-    email: string;
-
-    @Column()
-    password: string;
-}
-
-```
-
-- **`@Entity`**: تحدد أن الفئة تمثل جدولًا في قاعدة البيانات.
-- **`@PrimaryGeneratedColumn`**: تحدد العمود الرئيسي (Primary Key) الذي يتم توليد قيمته تلقائيًا.
-- **`@Column`**: تحدد عمودًا في الجدول.
-
-**التكامل مع قاعدة البيانات:**  
-يجب تعريف الكيان في إعدادات قاعدة البيانات.
-
-**ملف `ormconfig.json`:**
-
-```
-{
-    "type": "mysql",
-    "host": "localhost",
-    "port": 3306,
-    "username": "root",
-    "password": "password",
-    "database": "test_db",
-    "entities": ["dist/**/*.entity.js"], // مكان الكيانات
-    "synchronize": true
-}
-
-```
-
-
----
-
-### **ما هي الكيانات (Entities) في NestJS؟**
-
-الكيانات في **NestJS** (مع MongoDB عبر Mongoose) هي الكائنات التي تمثل البيانات التي يتم تخزينها في قاعدة البيانات. ببساطة، الكيان هو نموذج (**Model**) يحتوي على **هيكل البيانات** (schema) والخصائص التي تحدد كيف تبدو البيانات في الجداول أو المجموعات (collections) في MongoDB.
-
-
-
-### **شرح الكيانات باستخدام Mongoose:**
-
-عند العمل مع MongoDB في **NestJS**، يتم استخدام مكتبة **Mongoose** لإنشاء الكيانات وإدارة البيانات.  
-في Mongoose، الكيانات تعرف على شكل **Schemas** (هيكل البيانات) و**Models** (الواجهة البرمجية للتعامل مع البيانات).
-
-
-
-### **خطوات تعريف الكيانات باستخدام Mongoose:**
-
-#### 1. **إنشاء الكيان (Schema):**
-
-**مثال برمجي:**
-
-```
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-
-@Schema() // تعريف كيان MongoDB
-export class User extends Document {
-  @Prop({ required: true }) // خاصية name مطلوبة
-  name: string;
-
-  @Prop({ unique: true, required: true }) // خاصية email يجب أن تكون فريدة
-  email: string;
-
-  @Prop({ required: true }) // خاصية password مطلوبة
-  password: string;
-
-  @Prop({ default: Date.now }) // خاصية default تضيف تاريخ الإنشاء تلقائيًا
-  createdAt: Date;
-}
-
-// إنشاء Schema باستخدام SchemaFactory
-export const UserSchema = SchemaFactory.createForClass(User);
-
-```
-
-#### شرح الكود:
-
-- **`@Schema`**: تحدد أن الفئة هي كيان مرتبط بمجموعة (collection) في MongoDB.
-- **`@Prop`**: تُستخدم لتعريف خصائص البيانات، مثل نوع البيانات (`string`, `number`, إلخ) والقواعد المرتبطة بها (`required`, `unique`, إلخ).
-- **`Document`**: الكيان يورث من `Document` لأن Mongoose يعمل مع المستندات (Documents) في MongoDB.
-
-#### 2. **ربط الكيان بالوحدة (Module):**
-
-لتسجيل الكيان في التطبيق، نقوم بربطه بوحدة باستخدام **MongooseModule**.
-
-**مثال:**
-
-```
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './user.entity';
-
-@Module({
-  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
-  controllers: [],
-  providers: [],
-  exports: [],
-})
-export class UserModule {}
-
-```
-
-
-- **`MongooseModule.forFeature`**: تُستخدم لتسجيل الكيان (schema) في الوحدة.
-
-
-#### 3. **استخدام الكيان في الخدمة (Service):**
-
-**مثال على خدمة تتعامل مع كيان `User`:**
-
-```
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User } from './user.entity';
-
-@Injectable()
-export class UserService {
-  constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
-  ) {}
-
-  // إنشاء مستخدم جديد
-  async createUser(name: string, email: string, password: string): Promise<User> {
-    const newUser = new this.userModel({ name, email, password });
-    return newUser.save();
-  }
-
-  // جلب جميع المستخدمين
-  async getUsers(): Promise<User[]> {
-    return this.userModel.find().exec();
-  }
-
-  // جلب مستخدم حسب المعرف
-  async getUserById(id: string): Promise<User> {
-    return this.userModel.findById(id).exec();
-  }
-}
-
-```
-
-
-#### شرح الكود:
-
-- **`@InjectModel`**: تُستخدم لإدخال النموذج (Model) الخاص بالكيان.
-- **`find`**: لاسترجاع جميع المستندات (documents).
-- **`findById`**: لجلب مستند بناءً على معرّفه.
-- **`save`**: لحفظ مستند جديد في المجموعة.
-
-### **مثال عملي على MongoDB:**
-
-#### السيناريو:
-
-نريد إدارة مجموعة من المستخدمين (Users) تحتوي على الحقول:
-
-- **`name`**: اسم المستخدم.
-- **`email`**: البريد الإلكتروني.
-- **`password`**: كلمة المرور.
-- **`createdAt`**: تاريخ الإنشاء.
-
-#### الخطوات:
-
-1. تعريف الكيان (User Schema) كما في المثال أعلاه.
-2. تسجيل الكيان في الوحدة باستخدام `MongooseModule`.
-3. إنشاء خدمة (`UserService`) للتعامل مع البيانات.
-4. إنشاء وحدة تحكم (`UserController`) للتعامل مع الطلبات.
-
-
-
-### **إضافة وحدة تحكم (Controller):**
-
-**مثال:**
-
-```
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { UserService } from './user.service';
-
-@Controller('users')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
-
-  @Post()
-  async createUser(
-    @Body('name') name: string,
-    @Body('email') email: string,
-    @Body('password') password: string,
-  ) {
-    return this.userService.createUser(name, email, password);
-  }
-
-  @Get()
-  async getUsers() {
-    return this.userService.getUsers();
-  }
-
-  @Get(':id')
-  async getUserById(@Param('id') id: string) {
-    return this.userService.getUserById(id);
-  }
-}
-
-```
-
-
-### **ملخص:**
-
-1. **الكيانات مع MongoDB:** هي عبارة عن **Schemas** تُحدد هيكل البيانات باستخدام Mongoose.
-2. **التكامل مع NestJS:** يتم ذلك عبر `MongooseModule` لتسجيل الكيانات كوحدات.
-3. **الخدمات:** تُستخدم للتعامل مع البيانات في قاعدة البيانات.
-4. **وحدات التحكم:** تُحدد نقاط الوصول (Endpoints) للتفاعل مع الكيانات.
-
----
----
----
-
-**Migration (الهجرة)**
-في سياق البرمجة، وخاصة في العمل مع قواعد البيانات، هو عملية إدارة التعديلات التي تتم على بنية قاعدة البيانات بمرور الوقت، بشكل مبرمج ومنظم.  
-يتم استخدام **Migration** لتحديث قواعد البيانات بطريقة متزامنة مع الكود البرمجي، مما يجعل تطوير التطبيقات أكثر سهولة وأمانًا.
-
-### **لماذا نستخدم Migration؟**
-
-1. **إدارة التغييرات بسهولة:** عند الحاجة لإضافة جداول جديدة، تعديل أعمدة، أو حذف بيانات، يتم تسجيل هذه التغييرات كمجموعات قابلة للتتبع.
-2. **مزامنة الفريق:** عندما يعمل فريق تطوير على نفس المشروع، يضمن Migration أن جميع المطورين يعملون على نفس هيكل قاعدة البيانات.
-3. **التحكم بالإصدارات:** تسهل Migrations الرجوع إلى إصدار سابق من قاعدة البيانات إذا لزم الأمر.
-4. **أتمتة التعديلات:** تجنب الحاجة إلى تعديل قواعد البيانات يدويًا.
-
-
-### **مثال Migration مع MongoDB في NestJS (Mongoose):**
-
-#### **1. إنشاء Schema:**
-
-في MongoDB، يتم استخدام **Schemas** بدلاً من Migrations.  
-مثال على إنشاء جدول "Users":
-```
-import { Schema } from 'mongoose';
-
-export const UserSchema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
-
-```
-
-#### **2. تعديل Schema:**
-
-إذا احتجت إلى إضافة حقل جديد مثل "age"، يتم تعديل الـ Schema:
-
-```
-export const UserSchema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  age: { type: Number }, // حقل جديد
-});
-
-```
-
-#### **3. التحقق من التعديلات:**
-
-MongoDB ديناميكية بطبيعتها، لذا أي إضافة لحقل جديد لا تتطلب Migration تقليدي كما في قواعد البيانات العلائقية.
-
-### **الخلاصة:**
-
-- **Migration**
-- هو أداة لإدارة التغييرات في هيكل قواعد البيانات.
-- يعتمد على مبدأ كتابة الكود لتنفيذ التعديلات تلقائيًا بدلاً من القيام بها يدويًا.
-- MongoDB (مع Mongoose) 
-- يتميز بعدم الحاجة إلى Migrations تقليدية، لكن يظل العمل منظمًا عبر **Schemas**.
 
 
 
