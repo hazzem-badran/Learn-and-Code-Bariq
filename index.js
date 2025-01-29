@@ -1,0 +1,1 @@
+console.log("#Bariq_2027");
